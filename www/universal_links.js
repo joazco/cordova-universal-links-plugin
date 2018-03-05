@@ -17,7 +17,7 @@ var universalLinks = {
   dpLink: null,
   host: '',
   eventName: null,
-  regex: /\b[\w-]+$/gm, // /^.+token=/,
+  regex: /\b[\d-]+$/gm, // /^.+token=/,
 
   /**
    * Initialize the deeplink
