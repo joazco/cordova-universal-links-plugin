@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.3.1 (2018-03-05)
+
+**Bug fixes:**
+
+- Improved the default Regular Exp to extract the activation code 
+
 ## 2.3.0 (2018-02-26)
 
 **Docs:**

@@ -46,16 +46,10 @@ It is important not only to redirect users to your app from the web, but also pr
 - [Additional documentation links](#additional-documentation-links)
 
 ### Installation
-This requires cordova 5.0+ (current stable 1.2.1)
+Install via repo url directly (version 2.3.1)
 
 ```sh
-cordova plugin add cordova-universal-links-plugin
-```
-
-It is also possible to install via repo url directly (**unstable**)
-
-```sh
-cordova plugin add https://github.com/nordnet/cordova-universal-links-plugin.git
+cordova plugin add https://github.com/foneclay/cordova-universal-links-plugin.git#2.3.1
 ```
 
 ### Migrating from previous versions
@@ -351,7 +345,10 @@ universalLinks.subscribe(null, function (eventData) {
   "params": {
     "foo": "bar"
   },
-  "hash": "cordova-news"
+  "hash": "cordova-news",
+  "regex": /\b[\w-]+$/gm, // default value
+  "value": [], // It returns the value extracted from the deeplink object using the regex parameter
+  "match": false // "false" is default. It returns true if the magic-link match the specific domain
 }
 ```
 
@@ -489,46 +486,20 @@ Now, let's say, you want your app to handle all links from `myhost.com`, but you
 2. Add handling for default UL event in the `www/js/index.js`:
 
   ```js
-  var app = {
-    // Application Constructor
-    initialize: function() {
-      this.bindEvents();
-    },
+      universalLinks.initialize({host: 'https://my-domain.com/', eventName: 'event', regex: '/^.+token=/'}); // change the default values to match a specific host and an event name specified into the config.xml
 
-    // Bind Event Listeners
-    bindEvents: function() {
-      document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
+      universalLinks.checkDeepLink(3000) // wait 3000 ms before to make sure that a deeplink exists or not
+        .then(dpLink => {
+          ...
+        })
 
-    // deviceready Event Handler
-    onDeviceReady: function() {
-      console.log('Handle deviceready event if you need');
-      universalLinks.subscribe('openNewsListPage', app.onNewsListPageRequested);
-      universalLinks.subscribe('openNewsDetailedPage', app.onNewsDetailedPageRequested);
-      universalLinks.subscribe('launchedAppFromLink', app.onApplicationDidLaunchFromLink);
-    },
+  // NOTE: if it exists, the deeplink variable is also accessible using "universalLinks.dpLink"
 
-    // openNewsListPage Event Handler
-    onNewsListPageRequested: function(eventData) {
-      console.log('Showing to user list of awesome news');
+  /** Use the following HELPER attributes to check if the deeplink matches the host specified above and retrieve a specific value using the regex parameter  */
 
-      // do some work to show list of news
-    },
+  universalLinks.dpLink.match // true or false
 
-    // openNewsDetailedPage Event Handler
-    onNewsDetailedPageRequested: function(eventData) {
-      console.log('Showing to user details page for some news');
-
-      // do some work to show detailed page
-    },
-
-    // launchedAppFromLink Event Handler
-    onApplicationDidLaunchFromLink: function(eventData) {
-      console.log('Did launch app from the link: ' + eventData.url);
-    }
-  };
-
-  app.initialize();
+  universalLinks.dpLink.value // ["123456"] --> get the token from the initial magic-link (e.g: 'https://my-domain.com/webapp/invitation?token="123456"')
   ```
 
 That's it! Now, by default for `myhost.com` links `onApplicationDidLaunchFromLink` method will be called, but for `news` section - `onNewsListPageRequested` and `onNewsDetailedPageRequested`.
