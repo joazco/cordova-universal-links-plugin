@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.3.2 (2018-04-23)
+
+**Bug fixes:**
+
+- fixed issue about the android-web-hook path 
+
 ## 2.3.1 (2018-03-05)
 
 **Bug fixes:**
